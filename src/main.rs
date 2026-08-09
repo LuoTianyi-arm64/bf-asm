@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2026 LuoTianyi-arm64
+
 static mut POINT: usize = 0;
 
 macro_rules! bf_asm {
@@ -123,25 +126,40 @@ fn main() {
 }
 
 fn simplify_bf(code: &str) -> String {
-    let mut stack = Vec::new();
+    let mut stack0 = Vec::new();
     for ch in code.chars() {
         match ch {
             '>' | '<' => {
-                if let Some(&last) = stack.last() {
+                if let Some(&last) = stack0.last() {
                     if (last == '>' && ch == '<') || (last == '<' && ch == '>') {
-                        stack.pop();
+                        stack0.pop();
                         continue;
                     }
                 }
-                stack.push(ch);
+                stack0.push(ch);
             }
-            _ => stack.push(ch),
+            _ => stack0.push(ch),
+        }
+    }
+    let mut stack1 = Vec::new();
+    for ch in stack0 {
+        match ch {
+            '+' | '-' => {
+                if let Some(&last) = stack1.last() {
+                    if (last == '+' && ch == '-') || (last == '-' && ch == '+') {
+                        stack1.pop();
+                        continue;
+                    }
+                }
+                stack1.push(ch);
+            }
+            _ => stack1.push(ch),
         }
     }
 
-    if let Some(pos) = stack.iter().rposition(|&c| c == '.') {
-        stack[..=pos].iter().collect()
+    if let Some(pos) = stack1.iter().rposition(|&c| c == '.') {
+        stack1[..=pos].iter().collect()
     } else {
-        stack.into_iter().collect()
+        stack1.into_iter().collect()
     }
 }
