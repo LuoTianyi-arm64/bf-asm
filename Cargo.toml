@@ -2,5 +2,18 @@
 name = "bf_asm"
 version = "0.1.0"
 edition = "2024"
+license = "BSD-3-Clause"
 
 [dependencies]
+
+[lib]
+name = "bf_asm"
+path = "src/lib.rs"
+test = true
+# doctest = true
+bench = true
+doc = true
+proc-macro = false
+harness = true
+crate-type = ["rlib"]
+required-features = []
