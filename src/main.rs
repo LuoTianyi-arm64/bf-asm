@@ -8,7 +8,7 @@ fn main() {
     bf_asm!(mov r 2, r 3, fr 1, tar bf_code);
     bf_asm!(mov out, r 2, r 3, tar bf_code);
     bf_asm!(mov r 2, r 3, n 2, tar bf_code);
-    simplify_bf(code bf_code, target bf_code);
+    simplify_bf!(code bf_code, target bf_code);
     println!("{bf_code}");
 }
 
