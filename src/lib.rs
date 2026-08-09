@@ -2,4 +2,4 @@
 // Copyright (c) 2026 LuoTianyi-arm64
 
 pub mod asm;
-pub use asm::POINT;
+pub use asm::*;
