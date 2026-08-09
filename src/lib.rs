@@ -1,7 +1,9 @@
+// SPDX-License-Identifier: BSD-3-Clause
+// Copyright (c) 2026 LuoTianyi-arm64
 
-static mut POINT: usize = 0;
+pub static mut POINT: usize = 0;
 
-pub macro_rules! bf_asm {
+#[macro_export]  macro_rules! bf_asm {
     (mov r $addr: expr, in, tar $target: ident) => {
         unsafe {
             let mut output = String::new();

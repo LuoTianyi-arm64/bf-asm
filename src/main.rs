@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-3-Clause
 // Copyright (c) 2026 LuoTianyi-arm64
-
+use bf_asm::{bf_asm, POINT};
 
 fn main() {
     let mut bf_code = String::new();
