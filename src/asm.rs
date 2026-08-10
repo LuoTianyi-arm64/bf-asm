@@ -3,7 +3,8 @@
 
 pub static mut POINT: usize = 0;
 
-#[macro_export] macro_rules! bf_asm {
+#[macro_export]
+macro_rules! bf_asm {
     (mov ram $addr: expr, input, target $target: ident) => {
         unsafe {
             let mut output = String::new();
@@ -134,7 +135,7 @@ pub static mut POINT: usize = 0;
                                 output.push_str(&format!("{}", ">".repeat(t - POINT)));
                             }
                         }
-                        output.push_str(&format!("[-]{}","+".repeat(pre_com[$num - 15][0] as usize)));
+                        output.push_str(&format!("[-]{}","+".repeat(9)));
                         unsafe {
                             if POINT > $addr {
                                 output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
@@ -155,6 +156,57 @@ pub static mut POINT: usize = 0;
                                 output.push_str(&format!("{}", ">".repeat($addr - t)));
                         } else if $addr < t {
                                 output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","+".repeat(14)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        output.push_str(&format!("{}","+".repeat(1)));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                            }
+                        }
+                    },
+                    127 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-]{}","+".repeat(pre_com[$num - 15][0] as usize)));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", ">".repeat($addr - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-]"));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
                         }
                         output.push_str(&format!("{}","+".repeat(pre_com[$num - 15][1] as usize)));
                         if $addr > t {
@@ -181,7 +233,6 @@ pub static mut POINT: usize = 0;
                             }
                         }
                     },
-                    127 => {},
                     128..=241 => {},
                     _ => {},
                 })*
@@ -191,8 +242,8 @@ pub static mut POINT: usize = 0;
     };
 }
 
-
-#[macro_export] macro_rules! simplify_bf {
+#[macro_export]
+macro_rules! simplify_bf {
     (code $code: ident, target $target:ident) => {
         let mut stack0 = Vec::new();
         for ch in $code.chars() {
@@ -226,12 +277,9 @@ pub static mut POINT: usize = 0;
         }
 
         if let Some(pos) = stack1.iter().rposition(|&c| c == '.') {
-           $target = stack1[..=pos].iter().collect();
+            $target = stack1[..=pos].iter().collect();
         } else {
-             $target = stack1.iter().collect();
+            $target = stack1.iter().collect();
         }
-
-    }
+    };
 }
-
-
