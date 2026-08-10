@@ -847,6 +847,32 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
+    (if ram $addr: expr, target $target: ident) => {
+        unsafe {
+            let mut output = String::new();
+            if POINT > $addr {
+                output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
+            } else if POINT < $addr {
+                output.push_str(&format!("{}", ">".repeat($addr - POINT)));
+            }
+            output.push_str(&format!("["));
+            $target.push_str(&output);
+            POINT = $addr;
+        }
+    };
+    (endif ram $addr: expr, target $target: ident) => {
+        unsafe {
+            let mut output = String::new();
+            if POINT > $addr {
+                output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
+            } else if POINT < $addr {
+                output.push_str(&format!("{}", ">".repeat($addr - POINT)));
+            }
+            output.push_str(&format!("]"));
+            $target.push_str(&output);
+            POINT = $addr;
+        }
+    };
 }
 
 #[macro_export]
@@ -882,11 +908,6 @@ macro_rules! simplify_bf {
                 _ => stack1.push(ch),
             }
         }
-
-        if let Some(pos) = stack1.iter().rposition(|&c| c == '.') {
-            $target = stack1[..=pos].iter().collect();
-        } else {
-            $target = stack1.iter().collect();
-        }
+        $target = stack1.iter().collect();
     };
 }
