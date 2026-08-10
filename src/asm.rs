@@ -22,6 +22,11 @@ macro_rules! bf_asm {
             $target.push_str(&output);
         }
     };
+    (mov input, target $target: ident) => {
+        let mut output = String::new();
+        output.push_str(&format!(","));
+        $target.push_str(&output);
+    };
     (mov output $(, ram $addr: expr)+ , target $target: ident) => {
         $(unsafe {
             let mut output = String::new();
@@ -39,6 +44,11 @@ macro_rules! bf_asm {
             $target.push_str(&output);
         })+
 
+    };
+    (mov output, target $target: ident) => {
+        let mut output = String::new();
+        output.push_str(&format!("."));
+        $target.push_str(&output);
     };
     (mov $(ram $addr0:expr ,)+ from_ram $addr1: expr , target $target: ident, clean_target_ram $tag: ident) => {
         $(assert!($addr0 != $addr1, "错误,源和目标不能相同");)+
@@ -847,6 +857,22 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
+    (add_ptr $number: expr, target $target: ident) => {
+        unsafe {
+            let mut output = String::new();
+            output.push_str(&format!("{}", ">".repeat($number)));
+            $target.push_str(&output);
+            POINT += $number;
+        }
+    };
+    (sub_ptr $number: expr, target $target: ident) => {
+        unsafe {
+            let mut output = String::new();
+            output.push_str(&format!("{}", "<".repeat($number)));
+            $target.push_str(&output);
+            POINT -= $number;
+        }
+    };
     (if ram $addr: expr, target $target: ident) => {
         unsafe {
             let mut output = String::new();
@@ -860,6 +886,11 @@ macro_rules! bf_asm {
             POINT = $addr;
         }
     };
+    (if target $target: ident) => {
+        let mut output = String::new();
+        output.push_str(&format!("["));
+        $target.push_str(&output);
+    };
     (endif ram $addr: expr, target $target: ident) => {
         unsafe {
             let mut output = String::new();
@@ -872,6 +903,11 @@ macro_rules! bf_asm {
             $target.push_str(&output);
             POINT = $addr;
         }
+    };
+    (endif target $target: ident) => {
+        let mut output = String::new();
+        output.push_str(&format!("]"));
+        $target.push_str(&output);
     };
 }
 
