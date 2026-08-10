@@ -110,7 +110,7 @@ macro_rules! bf_asm {
 
                 $(match $num{
                     0 => {},
-                    1..=14 | 241..= 255  => {
+                    1..=14 | 240..= 255  => {
                         unsafe {
                             if POINT > $addr {
                                 output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
@@ -128,57 +128,6 @@ macro_rules! bf_asm {
                         }
                     },
                     15..=126 => {
-                        unsafe {
-                            if POINT > t {
-                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
-                            } else if POINT < t {
-                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
-                            }
-                        }
-                        output.push_str(&format!("[-]{}","+".repeat(9)));
-                        unsafe {
-                            if POINT > $addr {
-                                output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
-                            } else if POINT < $addr {
-                                output.push_str(&format!("{}", ">".repeat($addr - POINT)));
-                            }
-                        }
-                        output.push_str(&format!("[-]"));
-                        unsafe {
-                            if POINT > $addr {
-                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
-                            } else if POINT < $addr {
-                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
-                            }
-                        }
-                        output.push_str(&format!("[-"));
-                        if $addr > t {
-                                output.push_str(&format!("{}", ">".repeat($addr - t)));
-                        } else if $addr < t {
-                                output.push_str(&format!("{}", "<".repeat(t - $addr)));
-                        }
-                        output.push_str(&format!("{}","+".repeat(14)));
-                        if $addr > t {
-                            output.push_str(&format!("{}", "<".repeat($addr - t)));
-                        } else if $addr < t {
-                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
-                        }
-                        output.push_str(&format!("]"));
-                        if t > $addr {
-                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
-                        } else if t < $addr {
-                            output.push_str(&format!("{}", ">".repeat($addr - t)));
-                        }
-                        output.push_str(&format!("{}","+".repeat(1)));
-                        unsafe {
-                            if POINT > $addr {
-                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
-                            } else if POINT < $addr {
-                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
-                            }
-                        }
-                    },
-                    127 => {
                         unsafe {
                             if POINT > t {
                                 output.push_str(&format!("{}", "<".repeat(POINT - t)));
@@ -204,9 +153,9 @@ macro_rules! bf_asm {
                         }
                         output.push_str(&format!("[-"));
                         if $addr > t {
-                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                                output.push_str(&format!("{}", ">".repeat($addr - t)));
                         } else if $addr < t {
-                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                                output.push_str(&format!("{}", "<".repeat(t - $addr)));
                         }
                         output.push_str(&format!("{}","+".repeat(pre_com[$num - 15][1] as usize)));
                         if $addr > t {
@@ -233,7 +182,113 @@ macro_rules! bf_asm {
                             }
                         }
                     },
-                    128..=241 => {},
+                    127 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-]{}","+".repeat(9)));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", ">".repeat($addr - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-]"));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","+".repeat(14)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        output.push_str(&format!("{}","+".repeat(1)));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                            output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                            }
+                        }
+                    },
+                    128..=239 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-]{}","+".repeat(pre_com[239 - $num][0] as usize)));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", ">".repeat($addr - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-]"));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                            }
+                        }
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","-".repeat(pre_com[239 - $num][1] as usize)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        if pre_com[239 - $num][2] > 0 {
+                            output.push_str(&format!("{}","-".repeat(pre_com[239 - $num][2] as usize)));
+                        } else if pre_com[239 - $num][2] < 0 {
+                            output.push_str(&format!("{}","+".repeat((0 - pre_com[239 - $num][2]) as usize)));
+                        }
+                        output.push_str(&format!("--"));
+                        unsafe {
+                            if POINT > $addr {
+                                output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                            } else if POINT < $addr {
+                                output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                            }
+                        }
+                    },
                     _ => {},
                 })*
             }
