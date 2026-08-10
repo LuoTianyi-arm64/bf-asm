@@ -77,7 +77,7 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
-    (mov $(ram $addr: expr ,)+ number $num: expr $(, tmp $tmp:expr)? , target $target: ident, clean_target_ram $tag0: ident $(, clean_tmp_ram $tag1: ident)?) => {
+    (mov $(ram $addr: expr ,)+ number $num: expr $(, tmp ram $tmp:expr)? , target $target: ident, clean_target_ram $tag0: ident $(, clean_tmp_ram $tag1: ident)?) => {
         let tmp = {
             let mut tmp: Option<usize> = None;
             $(
@@ -353,7 +353,7 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
-    (add $(ram $addr: expr ,)+ number $num: expr $(, tmp $tmp:expr)? , target $target: ident $(, clean_tmp_ram $tag: ident)?) => {
+    (add $(ram $addr: expr ,)+ number $num: expr $(, tmp ram $tmp:expr)? , target $target: ident $(, clean_tmp_ram $tag: ident)?) => {
         let tmp = {
             let mut tmp: Option<usize> = None;
             $(
@@ -614,7 +614,7 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
-    (sub $(ram $addr: expr ,)+ number $num: expr $(, tmp $tmp:expr)? , target $target: ident $(, clean_tmp_ram $tag: ident)?) => {
+    (sub $(ram $addr: expr ,)+ number $num: expr $(, tmp ram $tmp:expr)? , target $target: ident $(, clean_tmp_ram $tag: ident)?) => {
         let tmp = {
             let mut tmp: Option<usize> = None;
             $(
