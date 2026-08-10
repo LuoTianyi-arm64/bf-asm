@@ -14,8 +14,7 @@ mod tests {
         bf_asm!(mov ram 1, ram 2, from_ram 0, target bf_code, clean_target_ram false);
         bf_asm!(mov output, ram 1, ram 2, target bf_code);
         simplify_bf!(code bf_code, target bf_code);
-        println!("{bf_code}");
-        assert_eq!(bf_code, ",[->+>+<<]>.>.")
+        assert_eq!(bf_code, ",[->+>+<<]>.>.<<")
     }
     #[test]
     fn test_print() {
@@ -25,10 +24,9 @@ mod tests {
         bf_asm!(mov ram 2, number 121, target bf_code, clean_target_ram false);
         bf_asm!(mov output, ram 0, ram 1, ram 2, target bf_code);
         simplify_bf!(code bf_code, target bf_code);
-        println!("{bf_code}");
         assert_eq!(
             bf_code,
-            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<<.>.>."
+            "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<<.>.>.<<"
         )
     }
     #[test]
@@ -45,5 +43,9 @@ mod tests {
         bf_asm!(mov ram 0, number 23, tmp ram 1, target bf_code2, clean_target_ram false, clean_tmp_ram false);
         simplify_bf!(code bf_code2, target bf_code2);
         assert_eq!(bf_code2, ">++++[-<++++++>]<-");
+        let mut bf_code3 = String::new();
+        bf_asm!(mov ram 0, number 155,tmp ram 1, target bf_code3, clean_target_ram false, clean_tmp_ram false);
+        simplify_bf!(code bf_code3, target bf_code3);
+        assert_eq!(bf_code3, ">++++++++++[-<---------->]<-");
     }
 }
