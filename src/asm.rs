@@ -176,7 +176,7 @@ macro_rules! bf_asm {
                             output.push_str(&format!("[-]"));
                         }
                         unsafe {
-                            if POINT > $addr {                        output.push_str(&format!("--"));
+                            if POINT > $addr {
                                 output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
                             } else if POINT < $addr {
                                 output.push_str(&format!("{}", "<".repeat($addr - POINT)));
@@ -493,7 +493,6 @@ macro_rules! bf_asm {
                         } else if PRE_COM[241 - $num][2] < 0 {
                             output.push_str(&format!("{}","+".repeat((0 - PRE_COM[241 - $num][2]) as usize)));
                         }
-                        output.push_str(&format!("--"));
                         unsafe {
                             if POINT > $addr {
                                 output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
@@ -699,7 +698,6 @@ macro_rules! bf_asm {
                         } else if PRE_COM[241 - $num][2] < 0 {
                             output.push_str(&format!("{}","-".repeat((0 - PRE_COM[241 - $num][2]) as usize)));
                         }
-                        output.push_str(&format!("--"));
                         unsafe {
                             if POINT > $addr {
                                 output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
