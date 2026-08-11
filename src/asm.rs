@@ -780,6 +780,23 @@ macro_rules! simplify_bf {
                 _ => stack1.push(ch),
             }
         }
-        $target = stack1.iter().collect();
+        let mut stack2 = Vec::new();
+        let mut flag = false;
+        for ch in stack1.rev() {
+            if flag {
+                stack2.push(ch);
+            } else {
+                match ch {
+                    '+' | '-' | ',' | '<' | '>' => {
+                        continue;
+                    },
+                    _ => {
+                        stack2.push(ch);
+                        flag = true;
+                    }
+                }
+            }
+        }
+        $target = stack2.iter().rev().collect();
     };
 }
