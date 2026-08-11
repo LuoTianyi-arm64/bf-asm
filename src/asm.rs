@@ -279,6 +279,27 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
+    (clean $(ram $addr: expr ,)+ target $target: ident) => {
+        let mut output = String::new();
+        $(
+            unsafe {
+                if POINT > $addr {
+                    output.push_str(&format!("{}", "<".repeat(POINT - $addr)));
+                } else if POINT < $addr {
+                    output.push_str(&format!("{}", ">".repeat($addr - POINT)));
+                }
+            }
+            output.push_str(&format!("[-]"));
+            unsafe {
+                if POINT > $addr {
+                    output.push_str(&format!("{}", ">".repeat(POINT - $addr)));
+                } else if POINT < $addr {
+                    output.push_str(&format!("{}", "<".repeat($addr - POINT)));
+                }
+            }
+        )*
+        $target.push_str(&output);
+    };
     (add $(ram $addr0:expr ,)+ from_ram $addr1: expr , target $target: ident) => {
         $(assert!($addr0 != $addr1, "错误,源和目标不能相同");)+
         let mut output = String::new();
@@ -781,21 +802,52 @@ macro_rules! simplify_bf {
             }
         }
         let mut stack2 = Vec::new();
-        let mut flag = false;
-        for ch in stack1.rev() {
-            if flag {
+        let mut tag0 = false;
+        let mut tag1 = 0;
+        let mut tag2 = false;
+        let mut tag3 = 0;
+        let mut i = 0;
+        for &ch in stack1.iter().rev() {
+            if tag0 {
                 stack2.push(ch);
             } else {
                 match ch {
                     '+' | '-' | ',' | '<' | '>' => {
-                        continue;
+                        if tag2 {
+                            tag3 += 1;
+                            stack2.push(ch);
+                        } else {
+                            tag3 = 0;
+                        }
+                    },
+                    ']' => {
+                        tag1 += 1;
+                        tag3 += 1;
+                        tag2 = true;
+                        stack2.push(ch);
+                    },
+                    '[' => {
+                        tag1 -= 1;
+                        if tag1 == 0 {
+                            tag3 += 1;
+                            stack2.push(ch);
+                            tag2 = false;
+                            stack2 = stack2[0..(stack2.len() - tag3)].to_vec();
+                        } else {
+                            tag3 += 1;
+                            stack2.push(ch);
+                        }
                     },
                     _ => {
                         stack2.push(ch);
-                        flag = true;
+                        tag0 = true;
+                        if tag2 {
+                            tag3 += 1;
+                        }
                     }
                 }
             }
+            i += 1;
         }
         $target = stack2.iter().rev().collect();
     };
