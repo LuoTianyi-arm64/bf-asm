@@ -507,6 +507,226 @@ macro_rules! bf_asm {
         }
         $target.push_str(&output);
     };
+    (add number $num: expr $(, tmp ram $tmp:expr)? , target $target: ident $(, clean_tmp_ram $tag: ident)?) => {
+        let tmp = {
+            let mut tmp: Option<usize> = None;
+            $(
+                tmp = Some($tmp);
+            )?
+            tmp
+        };
+        let tag = {
+            let mut tag = false;
+            $(
+                tag = $tag;
+            )?
+            tag
+        };
+        let mut output = String::new();
+        match tmp {
+            None => {
+                output.push_str(&format!("{}", "+".repeat($num)));
+            }
+            Some(t) => {
+
+                $(match $num{
+                    0 => {},
+                    1..=14 | 242..= 255  => {
+                        output.push_str(&format!("{}", "+".repeat($num)));
+                    },
+                    15..=128 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        if tag {
+                            output.push_str(&format!("[-]"));
+                        }
+                        output.push_str(&format!("{}","+".repeat(PRE_COM[$num - 15][0] as usize)));
+                        if tag1 {
+                            output.push_str(&format!("[-]"));
+                        }
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","+".repeat(PRE_COM[$num - 15][1] as usize)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        if PRE_COM[$num - 15][2] > 0 {
+                            output.push_str(&format!("{}","+".repeat(PRE_COM[$num - 15][2] as usize)));
+                        } else if PRE_COM[$num - 15][2] < 0 {
+                            output.push_str(&format!("{}","-".repeat((0 - PRE_COM[$num - 15][2]) as usize)));
+                        }
+                    },
+
+
+                    129..=241 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        if tag {
+                            output.push_str(&format!("[-]"));
+                        }
+                        output.push_str(&format!("{}","+".repeat(PRE_COM[241 - $num][0] as usize)));
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","-".repeat(PRE_COM[241 - $num][1] as usize)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        if PRE_COM[241 - $num][2] > 0 {
+                            output.push_str(&format!("{}","-".repeat(PRE_COM[241 - $num][2] as usize)));
+                        } else if PRE_COM[241 - $num][2] < 0 {
+                            output.push_str(&format!("{}","+".repeat((0 - PRE_COM[241 - $num][2]) as usize)));
+                        }
+                    },
+                    _ => {},
+                })*
+            }
+        }
+        $target.push_str(&output);
+    };
+    (sub number $num: expr $(, tmp ram $tmp:expr)? , target $target: ident $(, clean_tmp_ram $tag: ident)?) => {
+        let tmp = {
+            let mut tmp: Option<usize> = None;
+            $(
+                tmp = Some($tmp);
+            )?
+            tmp
+        };
+        let tag = {
+            let mut tag = false;
+            $(
+                tag = $tag;
+            )?
+            tag
+        };
+        let mut output = String::new();
+        match tmp {
+            None => {
+                output.push_str(&format!("{}", "-".repeat($num)));
+            }
+            Some(t) => {
+
+                $(match $num{
+                    0 => {},
+                    1..=14 | 242..= 255  => {
+                        output.push_str(&format!("{}", "-".repeat($num)));
+                    },
+                    15..=128 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        if tag {
+                            output.push_str(&format!("[-]"));
+                        }
+                        output.push_str(&format!("{}","+".repeat(PRE_COM[$num - 15][0] as usize)));
+                        if tag1 {
+                            output.push_str(&format!("[-]"));
+                        }
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","-".repeat(PRE_COM[$num - 15][1] as usize)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        if PRE_COM[$num - 15][2] > 0 {
+                            output.push_str(&format!("{}","-".repeat(PRE_COM[$num - 15][2] as usize)));
+                        } else if PRE_COM[$num - 15][2] < 0 {
+                            output.push_str(&format!("{}","+".repeat((0 - PRE_COM[$num - 15][2]) as usize)));
+                        }
+                    },
+
+
+                    129..=241 => {
+                        unsafe {
+                            if POINT > t {
+                                output.push_str(&format!("{}", "<".repeat(POINT - t)));
+                            } else if POINT < t {
+                                output.push_str(&format!("{}", ">".repeat(t - POINT)));
+                            }
+                        }
+                        if tag {
+                            output.push_str(&format!("[-]"));
+                        }
+                        output.push_str(&format!("{}","+".repeat(PRE_COM[241 - $num][0] as usize)));
+                        output.push_str(&format!("[-"));
+                        if $addr > t {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("{}","-".repeat(PRE_COM[241 - $num][1] as usize)));
+                        if $addr > t {
+                            output.push_str(&format!("{}", "<".repeat($addr - t)));
+                        } else if $addr < t {
+                            output.push_str(&format!("{}", ">".repeat(t - $addr)));
+                        }
+                        output.push_str(&format!("]"));
+                        if t > $addr {
+                            output.push_str(&format!("{}", "<".repeat(t - $addr)));
+                        } else if t < $addr {
+                            output.push_str(&format!("{}", ">".repeat($addr - t)));
+                        }
+                        if PRE_COM[241 - $num][2] > 0 {
+                            output.push_str(&format!("{}","+".repeat(PRE_COM[241 - $num][2] as usize)));
+                        } else if PRE_COM[241 - $num][2] < 0 {
+                            output.push_str(&format!("{}","-".repeat((0 - PRE_COM[241 - $num][2]) as usize)));
+                        }
+                    },
+                    _ => {},
+                })*
+            }
+        }
+        $target.push_str(&output);
+    };
     (sub $(ram $addr0:expr ,)+ from_ram $addr1: expr , target $target: ident) => {
         $(assert!($addr0 != $addr1, "错误,源和目标不能相同");)+
         let mut output = String::new();
