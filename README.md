@@ -1,6 +1,6 @@
 # bf_asm
 
-改项目定义了一个适用于brainfuck的asm,采用100% rust编写
+该项目定义了一个适用于brainfuck的asm,采用100% rust编写
 
 如需在项目中集成此项目,可以用
 ```toml
